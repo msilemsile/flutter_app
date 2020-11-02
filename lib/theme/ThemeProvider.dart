@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dark/DarkColors.dart';
 import 'dark/DartImages.dart';
@@ -104,6 +105,27 @@ class ThemeProvider extends InheritedNotifier<ThemeModel> {
     ThemeProvider themeProvider = read(context);
     themeProvider.notifier.setThemeType(themeType);
   }
+
+  ///获取状态栏样式根据当前主题
+  static SystemUiOverlayStyle getSystemUiStyle(BuildContext context){
+    SystemUiOverlayStyle uiOverlayStyle;
+    var themeModel = ThemeProvider.watch(context).getThemeType();
+    if (themeModel == ThemeProvider.type_light) {
+      uiOverlayStyle = SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      );
+    } else {
+      uiOverlayStyle = SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      );
+    }
+    return uiOverlayStyle;
+  }
+
 }
 
 ///主题模式 (type_light=0 亮色 || type_light=1 暗色)

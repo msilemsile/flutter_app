@@ -4,16 +4,18 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_app/theme/res/ColorsKey.dart';
 import 'package:flutter_app/theme/res/ShapeRes.dart';
+import 'package:flutter_app/utils/AppDialog.dart';
 import 'package:flutter_app/utils/Loading.dart';
+import 'package:flutter_app/utils/PopupWindow.dart';
 import 'package:flutter_app/utils/Toast.dart';
 
 import 'common/CommonPage.dart';
 import 'theme/ThemeProvider.dart';
 
 void main() {
-  debugPaintSizeEnabled = false;
   runApp(new MaterialApp(
     builder: (context, widget) {
       return ThemeProvider(
@@ -26,27 +28,34 @@ void main() {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CommonPage(
+    return BasePage(
       child: Container(
         alignment: Alignment.center,
         color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             buildButton(context, "更改主题", () {
               changeTheme(context);
             }),
+            Builder(
+              builder: (BuildContext popContext) {
+                return buildButton(context, "展示popupWindow", () {
+                  showPopupWindow(popContext);
+                });
+              },
+            ),
             buildButton(context, "展示toast", () {
               showToast(context);
             }),
-            buildButton(context, "展示loading(5s消失)", () {
+            buildButton(context, "展示dialog", () {
+              showDialog(context);
+            }),
+            buildButton(context, "展示loading(3s消失)", () {
               showLoading(context);
             }),
             buildButton(context, "展示可点击消失loading", () {
               showCancelLoading(context);
-            }),
-            buildButton(context, "展示popupWindow", () {
-              showPopupWindow(context);
             }),
           ],
         ),
@@ -55,26 +64,23 @@ class HomePage extends StatelessWidget {
   }
 
   Widget buildButton(BuildContext context, String name, Function click) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: RectangleShape(
-          solidColor: ThemeProvider.getColor(context, ColorsKey.bg_000000),
-          stokeColor: Colors.yellow,
-          stokeWidth: 1,
-          cornerAll: 5,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            child: Text(
-              name,
-              style: TextStyle(
-                  color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff)),
-            ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: RectangleShape(
+        solidColor: ThemeProvider.getColor(context, ColorsKey.bg_000000),
+        stokeColor: Colors.yellow,
+        stokeWidth: 1,
+        cornerAll: 5,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          child: Text(
+            name,
+            style: TextStyle(
+                color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff)),
           ),
         ),
-        onTap: click,
       ),
+      onTap: click,
     );
   }
 
@@ -90,24 +96,86 @@ class HomePage extends StatelessWidget {
 
   ///弹出toast
   void showToast(BuildContext context) {
-    Toast.show(context: context, text: "custom toast");
+    Toast.show(context, "custom toast");
   }
 
   ///展示loading(5秒消失,不可点击消失)
   void showLoading(BuildContext context) {
-    Loading.show(context: context);
-    Timer(Duration(seconds: 5), () {
+    Loading.show(context);
+    Timer(Duration(seconds: 3), () {
       Loading.hide(context);
     });
   }
 
   ///展示loading(可点击消失)
   void showCancelLoading(BuildContext context) {
-    Loading.show(context: context, canClose: true);
+    Loading.show(context, true);
   }
 
-  ///展示popupWindow
-  void showPopupWindow(BuildContext context) {
+  ///展示dialog(可点击消失)
+  void showDialog(BuildContext context) {
+    AppDialog dialog = AppDialog();
+    Widget dialogWidget = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: RectangleShape(
+        width: 270,
+        height: 200,
+        solidColor: ThemeProvider.getColor(context, ColorsKey.bg_000000),
+        stokeColor: Colors.yellow,
+        stokeWidth: 1,
+        cornerAll: 5,
+        child: Center(
+          child: Text(
+            "show dialog",
+            style: TextStyle(
+                color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff)),
+          ),
+        ),
+      ),
+      onTap: () {
+        Toast.show(context, "click dialog");
+      },
+    );
+    dialog.show(context, dialogWidget);
+  }
 
+  ///展示popupWindow(!!!context为当前点击的元素)
+  void showPopupWindow(BuildContext context) {
+    PopupWindow popupWindow = PopupWindow();
+    Function itemClick = () {
+      popupWindow.hide(context);
+    };
+    Widget popWidget = Column(
+      children: [
+        buildPopupWindowsItem(context, 1, itemClick),
+        buildPopupWindowsItem(context, 2, itemClick),
+        buildPopupWindowsItem(context, 3, itemClick),
+      ],
+    );
+    popupWindow.show(context, popWidget);
+  }
+
+  Widget buildPopupWindowsItem(
+      BuildContext context, int index, Function itemClick) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: RectangleShape(
+        solidColor: ThemeProvider.getColor(context, ColorsKey.bg_000000),
+        stokeWidth: 1,
+        stokeColor: ThemeProvider.getColor(context, ColorsKey.bg_ffffff),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(30, 15, 30, 15),
+          child: Text(
+            "PopWindowItem$index",
+            style: TextStyle(
+                color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff)),
+          ),
+        ),
+      ),
+      onTap: () {
+        Toast.show(context, "PopWindowItem$index");
+        itemClick();
+      },
+    );
   }
 }

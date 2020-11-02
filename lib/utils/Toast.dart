@@ -10,11 +10,8 @@ class Toast {
   static const int LENGTH_LONG = 1;
 
   ///展示toast
-  static void show(
-      {@required BuildContext context,
-      @required String text,
-      int length = LENGTH_SHORT,
-      int offsetY = -1}) {
+  static void show(BuildContext context, String text,
+      [int length = LENGTH_SHORT, int offsetY = -1]) {
     if (context == null || text == null) return;
     OverlayEntry toastOverLayEntry = OverlayEntry(builder: (context) {
       return _ToastWidget(
@@ -23,11 +20,11 @@ class Toast {
       );
     });
     Overlay.of(context).insert(toastOverLayEntry);
-    startToastDismissTask(toastOverLayEntry, length);
+    _startToastDismissTask(toastOverLayEntry, length);
   }
 
   ///执行toast消失任务
-  static void startToastDismissTask(
+  static void _startToastDismissTask(
       OverlayEntry toastOverLayEntry, int length) {
     Duration duration;
     if (length > 0) {

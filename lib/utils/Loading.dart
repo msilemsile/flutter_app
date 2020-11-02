@@ -2,38 +2,45 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/common/LoadingPage.dart';
+import 'package:flutter_app/common/TransparentPage.dart';
+import 'package:flutter_app/common/WillPopPage.dart';
 
 ///加载
 class Loading {
-  Map<NavigatorState, TransparentRoute> loadingRouterMap = HashMap();
+  Map<ModalRoute, TransparentRoute> loadingRouterMap = HashMap();
 
-  static void show({@required BuildContext context, bool canClose = false}) {
-    NavigatorState navigatorState = Navigator.of(context);
-    bool containsKey = _instance.loadingRouterMap.containsKey(navigatorState);
+  ///展示loading页
+  static void show(BuildContext context, [bool canTouchClose = false]) {
+    ModalRoute currentPageRoute = ModalRoute.of(context);
+    bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (!containsKey) {
-      TransparentRoute loadingRouter = TransparentRoute(builder: (context) {
-        return LoadingPage(
-          canTouchClose: canClose,
-          pageCloseListener: canClose
-              ? () {
+      TransparentRoute loadingRouter = TransparentRoute(builder: (_) {
+        return WillPopPage(
+          canTouchOpaqueClose: canTouchClose,
+          pageWillPopCallback: canTouchClose
+              ? (_) {
                   hide(context);
                 }
               : null,
+          child: Center(
+            child: LoadingWidget(),
+          ),
         );
       });
-      navigatorState.push(loadingRouter);
-      _instance.loadingRouterMap.addAll({navigatorState: loadingRouter});
+      Navigator.of(context).push(loadingRouter);
+      _instance.loadingRouterMap.addAll({currentPageRoute: loadingRouter});
     }
   }
 
+  ///隐藏loading页
   static void hide(BuildContext context) {
-    NavigatorState navigatorState = Navigator.of(context);
-    bool containsKey = _instance.loadingRouterMap.containsKey(navigatorState);
+    ModalRoute currentPageRoute = ModalRoute.of(context);
+    bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (containsKey) {
       TransparentRoute loadingRouter =
-          _instance.loadingRouterMap[navigatorState];
-      navigatorState.removeRoute(loadingRouter);
-      _instance.loadingRouterMap.remove(navigatorState);
+          _instance.loadingRouterMap[currentPageRoute];
+      Navigator.of(context).removeRoute(loadingRouter);
+      _instance.loadingRouterMap.remove(currentPageRoute);
     }
   }
 
@@ -43,44 +50,5 @@ class Loading {
 
   static Loading getInstance() {
     return _instance;
-  }
-}
-
-class TransparentRoute extends PageRoute<void> {
-  TransparentRoute({
-    @required this.builder,
-    RouteSettings settings,
-  })  : assert(builder != null),
-        super(settings: settings, fullscreenDialog: false);
-
-  final WidgetBuilder builder;
-
-  @override
-  bool get opaque => false;
-
-  @override
-  Color get barrierColor => null;
-
-  @override
-  String get barrierLabel => null;
-
-  @override
-  bool get maintainState => true;
-
-  @override
-  Duration get transitionDuration => Duration(milliseconds: 350);
-
-  @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
-    final result = builder(context);
-    return FadeTransition(
-      opacity: Tween<double>(begin: 0, end: 1).animate(animation),
-      child: Semantics(
-        scopesRoute: true,
-        explicitChildNodes: true,
-        child: result,
-      ),
-    );
   }
 }
