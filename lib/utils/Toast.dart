@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/theme/ThemeProvider.dart';
+import 'package:flutter_app/theme/res/ColorsKey.dart';
 import 'package:flutter_app/theme/res/ShapeRes.dart';
 
 ///Toast
@@ -62,14 +64,14 @@ class _ToastWidget extends StatelessWidget {
             child: Center(
               child: RectangleShape(
                 cornerAll: 3,
-                solidColor: Color.fromRGBO(0, 0, 0, 0.6),
+                solidColor: ThemeProvider.getColor(context, ColorsKey.bg_000000),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: DefaultTextStyle(
                     style: Theme.of(context).textTheme.bodyText2,
                     child: Text(
                       text,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff)),
                     ),
                   ),
                 ),

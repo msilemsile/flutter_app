@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/CommonPage.dart';
 import 'package:flutter_app/common/TransparentPage.dart';
-import 'package:flutter_app/common/WillPopPage.dart';
+import 'package:flutter_app/common/WillPopCallbackPage.dart';
 import 'package:flutter_app/utils/Toast.dart';
 
 ///popup window

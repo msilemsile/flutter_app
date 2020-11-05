@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app/theme/res/ColorsKey.dart';
 import 'package:flutter_app/theme/res/ShapeRes.dart';
 import 'package:flutter_app/utils/AppDialog.dart';
+import 'package:flutter_app/utils/AppLoading.dart';
 import 'package:flutter_app/utils/Loading.dart';
 import 'package:flutter_app/utils/PopupWindow.dart';
 import 'package:flutter_app/utils/Toast.dart';
@@ -53,13 +54,20 @@ class HomePage extends StatelessWidget {
             }),
             buildButton(context, "展示loading(3s消失)", () {
               showLoading(context);
+
               ///打开新的界面 3秒后测试上一个loading加载界面是否会消失
-              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                 return HomePage();
               }));
             }),
             buildButton(context, "展示可点击消失loading", () {
               showCancelLoading(context);
+            }),
+            buildButton(context, "展示全局Loading", () {
+              showAppLoading(context);
+            }),
+            buildButton(context, "取消全局Loading", () {
+              hideAppLoading();
             }),
           ],
         ),
@@ -181,5 +189,15 @@ class HomePage extends StatelessWidget {
         itemClick();
       },
     );
+  }
+
+  ///展示app全局loading
+  void showAppLoading(BuildContext context) {
+    AppLoading.show(context, true);
+  }
+
+  ///取消app全局loading
+  void hideAppLoading() {
+    AppLoading.hide();
   }
 }

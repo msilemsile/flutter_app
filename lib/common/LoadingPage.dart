@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/theme/ThemeProvider.dart';
+import 'package:flutter_app/theme/res/ColorsKey.dart';
 
 import 'CommonPage.dart';
 
@@ -30,7 +32,7 @@ class LoadingWidget extends StatelessWidget {
       height: height,
       child: CircularProgressIndicator(
         strokeWidth: 4.0,
-        valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+        valueColor: new AlwaysStoppedAnimation<Color>(ThemeProvider.getColor(context, ColorsKey.loading_color)),
       ),
     );
   }

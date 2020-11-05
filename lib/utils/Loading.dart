@@ -3,9 +3,9 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/common/LoadingPage.dart';
 import 'package:flutter_app/common/TransparentPage.dart';
-import 'package:flutter_app/common/WillPopPage.dart';
+import 'package:flutter_app/common/WillPopCallbackPage.dart';
 
-///加载页面（AB->A(loading)B）
+///加载页面（A+B -> A+{loading}+B）
 class Loading {
   Map<ModalRoute, TransparentRoute> loadingRouterMap = HashMap();
 

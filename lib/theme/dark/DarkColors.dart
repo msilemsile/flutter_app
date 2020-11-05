@@ -6,5 +6,6 @@ class DarkColors {
   static const Map<int, int> Colors = {
     ColorsKey.bg_ffffff: ColorsRes.color_000000,
     ColorsKey.bg_000000: ColorsRes.color_ffffff,
+    ColorsKey.loading_color: ColorsRes.color_0000ff,
   };
 }

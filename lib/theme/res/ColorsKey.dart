@@ -2,4 +2,5 @@
 class ColorsKey {
   static const int bg_ffffff = 1;
   static const int bg_000000 = 2;
+  static const int loading_color = 3;
 }
