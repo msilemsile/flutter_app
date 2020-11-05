@@ -11,11 +11,15 @@ class AppDialog {
 
   ///展示dialog
   void show(BuildContext context, Widget dialogWidget,
-      [bool canTouchOpaqueClose = true]) {
+      [bool canTouchClose = true, bool canBackClose = true]) {
     _dialogRoute = TransparentRoute(builder: (_) {
-      return WillPopPage(
-        canTouchOpaqueClose: canTouchOpaqueClose,
-        pageWillPopCallback: canTouchOpaqueClose
+      return WillPopCallbackPage(
+        touchPopCallback: canTouchClose
+            ? (_) {
+                dismiss(context);
+              }
+            : null,
+        backPopCallback: canBackClose
             ? (_) {
                 dismiss(context);
               }

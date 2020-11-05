@@ -5,27 +5,27 @@ import 'CommonPage.dart';
 
 typedef OnPageWillPopCallback = void Function(BuildContext context);
 
-///监听返回WillPopPage(canTouchOpaqueClose是否点击透明区域关闭)
-class WillPopPage extends StatelessWidget {
+///监听返回WillPopPage(touchPopCallback点击透明区域回调 backPopCallback是否点击返回按键回调)
+class WillPopCallbackPage extends StatelessWidget {
   final Widget child;
   final Color backgroundColor;
-  final bool canTouchOpaqueClose;
-  final OnPageWillPopCallback pageWillPopCallback;
+  final OnPageWillPopCallback touchPopCallback;
+  final OnPageWillPopCallback backPopCallback;
 
-  WillPopPage(
+  WillPopCallbackPage(
       {Key key,
       @required this.child,
       this.backgroundColor = Colors.transparent,
-      this.canTouchOpaqueClose = false,
-      this.pageWillPopCallback})
+      this.touchPopCallback,
+      this.backPopCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        if (pageWillPopCallback != null) {
-          pageWillPopCallback(context);
+        if (backPopCallback != null) {
+          backPopCallback(context);
         }
         return Future.value(false);
       },
@@ -33,8 +33,8 @@ class WillPopPage extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: BasePage(color: backgroundColor, child: child),
         onTap: () {
-          if (canTouchOpaqueClose && pageWillPopCallback != null) {
-            pageWillPopCallback(context);
+          if (touchPopCallback != null) {
+            touchPopCallback(context);
           }
         },
       ),

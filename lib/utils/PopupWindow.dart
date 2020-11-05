@@ -18,9 +18,11 @@ class PopupWindow {
       Size size = renderBox.size;
       Offset offset = renderBox.localToGlobal(Offset.zero);
       _popRoute = TransparentRoute(builder: (_) {
-        return WillPopPage(
-          canTouchOpaqueClose: true,
-          pageWillPopCallback: (_) {
+        return WillPopCallbackPage(
+          touchPopCallback: (_) {
+            hide(context);
+          },
+          backPopCallback: (_) {
             hide(context);
           },
           child: _PopupInnerPage(

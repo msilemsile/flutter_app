@@ -5,23 +5,26 @@ import 'package:flutter_app/common/LoadingPage.dart';
 import 'package:flutter_app/common/TransparentPage.dart';
 import 'package:flutter_app/common/WillPopPage.dart';
 
-///加载
+///加载页面（AB->A(loading)B）
 class Loading {
   Map<ModalRoute, TransparentRoute> loadingRouterMap = HashMap();
 
   ///展示loading页
-  static void show(BuildContext context, [bool canTouchClose = false]) {
+  static void show(BuildContext context,
+      [bool canTouchClose = false, bool canBackClose = true]) {
     ModalRoute currentPageRoute = ModalRoute.of(context);
     bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (!containsKey) {
       TransparentRoute loadingRouter = TransparentRoute(builder: (_) {
-        return WillPopPage(
-          canTouchOpaqueClose: canTouchClose,
-          pageWillPopCallback: canTouchClose
+        return WillPopCallbackPage(
+          touchPopCallback: canTouchClose
               ? (_) {
-                  hide(context);
-                }
+            hide(context);
+          }
               : null,
+          backPopCallback: canBackClose ? (_) {
+            hide(context);
+          } : null,
           child: Center(
             child: LoadingWidget(),
           ),
@@ -38,7 +41,7 @@ class Loading {
     bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (containsKey) {
       TransparentRoute loadingRouter =
-          _instance.loadingRouterMap[currentPageRoute];
+      _instance.loadingRouterMap[currentPageRoute];
       Navigator.of(context).removeRoute(loadingRouter);
       _instance.loadingRouterMap.remove(currentPageRoute);
     }

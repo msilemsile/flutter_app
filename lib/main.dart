@@ -53,6 +53,10 @@ class HomePage extends StatelessWidget {
             }),
             buildButton(context, "展示loading(3s消失)", () {
               showLoading(context);
+              ///打开新的界面 3秒后测试上一个loading加载界面是否会消失
+              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                return HomePage();
+              }));
             }),
             buildButton(context, "展示可点击消失loading", () {
               showCancelLoading(context);
