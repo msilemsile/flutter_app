@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app/common/CommonLoadingPage.dart';
 import 'package:flutter_app/theme/res/ColorsKey.dart';
 import 'package:flutter_app/theme/res/ShapeRes.dart';
 import 'package:flutter_app/utils/AppDialog.dart';
@@ -27,9 +28,13 @@ void main() {
 }
 
 class HomePage extends StatelessWidget {
+  ///loading控制器
+  final LoadingController _loadingController = LoadingController();
+
   @override
   Widget build(BuildContext context) {
-    return BasePage(
+    return CommonLoadingPage(
+      loadingController: _loadingController,
       child: Container(
         alignment: Alignment.center,
         color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff),
@@ -52,7 +57,7 @@ class HomePage extends StatelessWidget {
             buildButton(context, "展示dialog", () {
               showDialog(context);
             }),
-            buildButton(context, "展示loading(3s消失)", () {
+            buildButton(context, "展示loading[页面级别](3s消失)", () {
               showLoading(context);
 
               ///打开新的界面 3秒后测试上一个loading加载界面是否会消失
@@ -60,14 +65,20 @@ class HomePage extends StatelessWidget {
                 return HomePage();
               }));
             }),
-            buildButton(context, "展示可点击消失loading", () {
+            buildButton(context, "展示可点击消失loading[页面级别]", () {
               showCancelLoading(context);
             }),
-            buildButton(context, "展示全局Loading", () {
+            buildButton(context, "展示全局Loading[全局级别]", () {
               showAppLoading(context);
             }),
-            buildButton(context, "取消全局Loading", () {
+            buildButton(context, "取消全局Loading[全局级别]", () {
               hideAppLoading();
+            }),
+            buildButton(context, "展示Loading[控件级别]", () {
+              _loadingController.showLoading();
+            }),
+            buildButton(context, "取消Loading[控件级别]", () {
+              _loadingController.dismissLoading();
             }),
           ],
         ),

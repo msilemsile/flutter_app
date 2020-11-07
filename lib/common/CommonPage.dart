@@ -6,7 +6,7 @@ class CommonPage extends BasePage {
   final Widget child;
   final Color color;
 
-  CommonPage({Key key, this.child, this.color})
+  CommonPage({Key key, @required this.child, this.color})
       : super(key: key, child: child, color: color);
 
   @override
@@ -20,7 +20,7 @@ class BasePage extends StatelessWidget {
   final Widget child;
   final Color color;
 
-  BasePage({Key key, this.child, this.color}) : super(key: key);
+  BasePage({Key key, @required this.child, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

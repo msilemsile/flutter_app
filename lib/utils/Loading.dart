@@ -13,18 +13,23 @@ class Loading {
   static void show(BuildContext context,
       [bool canTouchClose = false, bool canBackClose = true]) {
     ModalRoute currentPageRoute = ModalRoute.of(context);
+    if (!currentPageRoute.isCurrent) {
+      return;
+    }
     bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (!containsKey) {
       TransparentRoute loadingRouter = TransparentRoute(builder: (_) {
         return WillPopCallbackPage(
           touchPopCallback: canTouchClose
               ? (_) {
-            hide(context);
-          }
+                  hide(context);
+                }
               : null,
-          backPopCallback: canBackClose ? (_) {
-            hide(context);
-          } : null,
+          backPopCallback: canBackClose
+              ? (_) {
+                  hide(context);
+                }
+              : null,
           child: Center(
             child: LoadingWidget(),
           ),
@@ -41,7 +46,7 @@ class Loading {
     bool containsKey = _instance.loadingRouterMap.containsKey(currentPageRoute);
     if (containsKey) {
       TransparentRoute loadingRouter =
-      _instance.loadingRouterMap[currentPageRoute];
+          _instance.loadingRouterMap[currentPageRoute];
       Navigator.of(context).removeRoute(loadingRouter);
       _instance.loadingRouterMap.remove(currentPageRoute);
     }
