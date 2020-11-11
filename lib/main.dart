@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -14,7 +15,6 @@ import 'package:flutter_app/utils/Loading.dart';
 import 'package:flutter_app/utils/PopupWindow.dart';
 import 'package:flutter_app/utils/Toast.dart';
 
-import 'common/CommonPage.dart';
 import 'theme/ThemeProvider.dart';
 
 void main() {
@@ -38,51 +38,59 @@ class HomePage extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         color: ThemeProvider.getColor(context, ColorsKey.bg_ffffff),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            buildButton(context, "更改主题", () {
-              changeTheme(context);
-            }),
-            Builder(
-              builder: (BuildContext popContext) {
-                return buildButton(context, "展示popupWindow", () {
-                  showPopupWindow(popContext);
-                });
-              },
-            ),
-            buildButton(context, "展示toast", () {
-              showToast(context);
-            }),
-            buildButton(context, "展示dialog", () {
-              showDialog(context);
-            }),
-            buildButton(context, "展示loading[页面级别](3s消失)", () {
-              showLoading(context);
-
-              ///打开新的界面 3秒后测试上一个loading加载界面是否会消失
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                return HomePage();
-              }));
-            }),
-            buildButton(context, "展示可点击消失loading[页面级别]", () {
-              showCancelLoading(context);
-            }),
-            buildButton(context, "展示全局Loading[全局级别]", () {
-              showAppLoading(context);
-            }),
-            buildButton(context, "取消全局Loading[全局级别]", () {
-              hideAppLoading();
-            }),
-            buildButton(context, "展示Loading[控件级别]", () {
-              _loadingController.showLoading();
-            }),
-            buildButton(context, "取消Loading[控件级别]", () {
-              _loadingController.dismissLoading();
-            }),
-          ],
-        ),
+        child: buildContent(context),
       ),
+    );
+  }
+
+  Widget buildContent(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomPaint(
+          painter: ProgressPainter(),
+          size: Size(120, 120),
+        ),
+        buildButton(context, "更改主题", () {
+          changeTheme(context);
+        }),
+        Builder(
+          builder: (BuildContext popContext) {
+            return buildButton(context, "展示popupWindow", () {
+              showPopupWindow(popContext);
+            });
+          },
+        ),
+        buildButton(context, "展示toast", () {
+          showToast(context);
+        }),
+        buildButton(context, "展示dialog", () {
+          showDialog(context);
+        }),
+        buildButton(context, "展示loading[页面级别](3s消失)", () {
+          showLoading(context);
+
+          ///打开新的界面 3秒后测试上一个loading加载界面是否会消失
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            return HomePage();
+          }));
+        }),
+        buildButton(context, "展示可点击消失loading[页面级别]", () {
+          showCancelLoading(context);
+        }),
+        buildButton(context, "展示全局Loading[全局级别]", () {
+          showAppLoading(context);
+        }),
+        buildButton(context, "取消全局Loading[全局级别]", () {
+          hideAppLoading();
+        }),
+        buildButton(context, "展示Loading[控件级别]", () {
+          _loadingController.showLoading();
+        }),
+        buildButton(context, "取消Loading[控件级别]", () {
+          _loadingController.dismissLoading();
+        }),
+      ],
     );
   }
 
@@ -210,5 +218,57 @@ class HomePage extends StatelessWidget {
   ///取消app全局loading
   void hideAppLoading() {
     AppLoading.hide();
+  }
+}
+
+class ProgressPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    double width = size.width;
+    double height = size.height;
+    double strokeWidth = 10;
+    double progress = 0.7;
+    Rect rect = Rect.fromLTRB(
+        strokeWidth, strokeWidth, width - strokeWidth, height - strokeWidth);
+    double totalArcLength = 3 / 2 * pi;
+    double startArcLength = 1 / 4 * pi;
+    SweepGradient sweepGradient = SweepGradient(
+      colors: [Colors.red, Colors.yellow],
+    );
+    Paint proPaint = Paint()
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..shader = sweepGradient.createShader(rect);
+    Paint bgPaint = Paint()
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.lightBlue;
+    canvas.save();
+    // 计算画布中心轨迹圆半径
+    double r = sqrt(pow(size.width, 2) + pow(size.height, 2));
+    // 计算画布中心点初始弧度
+    double startAngle = atan(size.height / size.width);
+    // 计算画布初始中心点坐标
+    Point p0 = Point(r * cos(startAngle), r * sin(startAngle));
+    // 需要旋转的弧度
+    double xAngle = pi / 2;
+    // 计算旋转后的画布中心点坐标
+    Point px =
+        Point(r * cos(xAngle + startAngle), r * sin(xAngle + startAngle));
+    // 先平移画布
+    canvas.translate((p0.x - px.x) / 2, (p0.y - px.y) / 2);
+    // 后旋转
+    canvas.rotate(xAngle);
+    canvas.drawArc(rect, startArcLength, totalArcLength, false, bgPaint);
+    canvas.drawArc(
+        rect, startArcLength, totalArcLength * progress, false, proPaint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
