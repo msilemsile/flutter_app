@@ -1,16 +1,14 @@
-# flutter_app
+# flutter_app 基础组件库
+1、ThemeProvider（自定义多主题组件不依赖系统主题）
 
-A new Flutter project.
+2、PopupWindow
 
-## Getting Started
+3、Toast
 
-This project is a starting point for a Flutter application.
+4、Dialog
 
-A few resources to get you started if this is your first Flutter project:
+5、Loading（三种级别1.widget级别2.页面级别3.全局级别）
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+截图:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Image](./demo1.png)
