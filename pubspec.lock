@@ -73,11 +73,9 @@ packages:
   flutter_common:
     dependency: "direct dev"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "8aebc1da466f150a7b68278b65588a59958c04c3"
-      url: "git@gitee.com:msilemsile/flutter_common.git"
-    source: git
+      path: "../flutter_common"
+      relative: true
+    source: path
     version: "0.0.1"
   flutter_lints:
     dependency: "direct dev"
